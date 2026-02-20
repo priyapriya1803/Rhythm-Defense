@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Left Leg
   - Right Leg
+  - Left Hand
+  - Right Hand
   layers:
   - Default
   - TransparentFX
