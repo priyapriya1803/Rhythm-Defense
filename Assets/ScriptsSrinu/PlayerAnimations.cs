@@ -25,7 +25,6 @@ public class PlayerAnimations : MonoBehaviour
     {
         animator.SetTrigger("rightLegUp");
     }
-
     public void RightLegDown()
     {
         animator.SetTrigger("rightLegDown");

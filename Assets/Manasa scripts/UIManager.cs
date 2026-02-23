@@ -21,24 +21,11 @@ public class UIManager : MonoBehaviour
     {
         playBtn.onClick.AddListener(Play);
         quitBtn.onClick.AddListener(Quit);
-        UpdateScoreUI();
     }
 
-    void Update()
+    public void UpdateScoreUI()
     {
-        // Increase score when left mouse button is clicked
-        if (gameStarted && !gameOver)
-        {
-            if (Input.GetMouseButtonDown(0))   // 0 = Left Click
-            {
-                score++;
-                UpdateScoreUI();
-            }
-        }
-    }
-
-    void UpdateScoreUI()
-    {
+        score++;
         scoreText.text = "Score : " + score;
     }
 

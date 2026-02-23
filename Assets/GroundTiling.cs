@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GroundTiling : MonoBehaviour
@@ -13,8 +11,10 @@ public class GroundTiling : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-
-        spwaning.SpawnTile();
-        Destroy(gameObject, 2);
+        if(other.gameObject.tag == "Player")
+        {
+            spwaning.SpawnTile();
+            Destroy(gameObject, 2);
+        }
     }
 }

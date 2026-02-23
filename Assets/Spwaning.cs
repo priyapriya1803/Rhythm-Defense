@@ -5,7 +5,7 @@ using UnityEngine;
 public class Spwaning : MonoBehaviour
 {
     public GameObject Ground;
-     Vector3 NextSpawnPoint;
+    Vector3 NextSpawnPoint;
 
     public void SpawnTile()
     {
@@ -15,7 +15,7 @@ public class Spwaning : MonoBehaviour
 
     void Start()
     {
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 10; i++)
         {
             SpawnTile();
         }

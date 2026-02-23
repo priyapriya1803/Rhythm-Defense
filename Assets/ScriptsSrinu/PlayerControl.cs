@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour
 {
     private PlayerAnimations playerAnim;
+    public bool isLeftLegActive = false;
+    public bool isRightLegActive = false;
 
     private void Start()
     {
@@ -19,23 +21,33 @@ public class PlayerControl : MonoBehaviour
 
     private void LegsMovement()
     {
-        string input = Input.inputString;
-        switch (input)
+
+        if (Input.GetKeyDown(KeyCode.A))
         {
-            case "a":
-                playerAnim.LeftLegUP();
-                break;
-            case "s":
-                playerAnim.LeftLegDown(); 
-                break;
-            case "d":
-                playerAnim.RightLegUP();
-                break;
-            case "f":
-                playerAnim.RightLegDown();
-                break;
-        } 
+            isLeftLegActive = true;
+            playerAnim.LeftLegUP();
+            StartCoroutine(ResetLeftLeg());
+        }
+
+        if(Input.GetKeyDown(KeyCode.D))
+        {
+            isRightLegActive = true;
+            playerAnim.RightLegUP();
+            StartCoroutine(ResetRightLeg());
+        }
     }
 
+
+    IEnumerator ResetLeftLeg()
+    {
+        yield return new WaitForSeconds(0.2f);
+        isLeftLegActive = false;
+    }
+
+    IEnumerator ResetRightLeg()
+    {
+        yield return new WaitForSeconds(0.2f);
+        isRightLegActive = false;
+    }
 
 }
