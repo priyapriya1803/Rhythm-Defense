@@ -19,10 +19,10 @@ public class environmentmanager : MonoBehaviour
 
   void Update()
   {
-    bool movementkey = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow);
+    bool movementkey = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D);
     if (movementkey)
     {
-      movetime += 10 * Time.deltaTime;
+      movetime += 2 * Time.deltaTime;
       idletime = 0f;
     }
     else
@@ -52,17 +52,17 @@ public class environmentmanager : MonoBehaviour
   void updateEnvironment()
   {
     Debug.Log("Environment Update: Score = " + Score);
-    if (Score < 10)
+    if (Score < 50)
     {
       ActivateEnvironment(Poor);
       Debug.Log("Poor Environment Activated");
     }
-    else if (Score >= 10 && Score < 20)
+    else if (Score >= 50 && Score < 100)
     {
       Debug.Log("Better Environment Activated");
       ActivateEnvironment(Better);
     }
-    else if (Score >= 20 && Score < 30)
+    else if (Score >= 100 && Score < 150)
     {
       Debug.Log("Good Environment Activated");
       ActivateEnvironment(Good);
