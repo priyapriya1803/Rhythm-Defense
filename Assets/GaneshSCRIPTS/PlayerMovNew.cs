@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovNew : MonoBehaviour
@@ -7,7 +5,8 @@ public class PlayerMovNew : MonoBehaviour
     private Animator animator;
     private AudioSource audioSource;
 
-    public float rotationSpeed = 300f;
+    public float moveSpeed=3f;
+    public float rotationSpeed=300f;
     public AudioClip moveSound;
 
     private bool isRotating = false;
@@ -15,39 +14,52 @@ public class PlayerMovNew : MonoBehaviour
 
     void Start()
     {
-        animator = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
+        animator=GetComponent<Animator>();
+        audioSource=GetComponent<AudioSource>();
 
-        audioSource.clip = moveSound;
-        audioSource.loop = true;
+        audioSource.clip=moveSound;
+        audioSource.loop=true;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
-            animator.SetTrigger("Walking");
+        bool isMoving = false;
 
-        if (Input.GetKeyDown(KeyCode.Q) && !isRotating)
+        if (Input.GetKey(KeyCode.W))
         {
-            targetRotation = transform.rotation * Quaternion.Euler(0, -90f, 0);
+            transform.Translate(Vector3.forward*moveSpeed*Time.deltaTime);
+            animator.SetBool("isWalking",true);
+            isMoving = true;
+        }
+        else
+        {
+            animator.SetBool("isWalking",false);
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.Q)&&!isRotating)
+        {
+            targetRotation = transform.rotation*Quaternion.Euler(0, -90f, 0);
             isRotating = true;
         }
 
         if (Input.GetKeyDown(KeyCode.E) && !isRotating)
         {
-            targetRotation = transform.rotation * Quaternion.Euler(0, 90f, 0);
+            targetRotation = transform.rotation*Quaternion.Euler(0, 90f, 0);
             isRotating = true;
         }
 
         if (isRotating)
         {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            transform.rotation=Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
-            if (Quaternion.Angle(transform.rotation, targetRotation) < 0.1f)
+            if (Quaternion.Angle(transform.rotation,targetRotation) < 0.1f)
             {
-                transform.rotation = targetRotation;
+                transform.rotation=targetRotation;
                 isRotating = false;
             }
+
+            isMoving = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -55,10 +67,6 @@ public class PlayerMovNew : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.S))
             animator.SetTrigger("Slide");
-
-        bool isMoving =
-            Input.GetKey(KeyCode.W) ||
-            isRotating;
 
         if (isMoving)
         {
@@ -70,7 +78,8 @@ public class PlayerMovNew : MonoBehaviour
             audioSource.Stop();
         }
 
-        if (!Input.anyKey && !isRotating)
+
+        if (!isMoving)
             animator.SetTrigger("Idle");
     }
 }
