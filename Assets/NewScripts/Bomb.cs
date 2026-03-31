@@ -6,7 +6,7 @@ public class Bomb : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            FindObjectOfType<ConditionBar>().HitBomb();
+            FindObjectOfType<GameManager>().HitBomb();
             Destroy(gameObject);
         }
     }

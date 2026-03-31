@@ -24,6 +24,11 @@ public class GameManager : MonoBehaviour
 
     public Transform playerTf;
 
+    [Header("Environment Mid Points")]
+    public Transform betterMid;
+    public Transform goodMid;
+    public Transform perfectMid;
+
     [Header("UI")]
     public TextMeshProUGUI scoreText;
     public GameObject perfectPanel;
@@ -31,6 +36,7 @@ public class GameManager : MonoBehaviour
 
     int score = 0;
     GameObject currentEnv;
+    bool envChanged = false;
 
     void Start()
     {
@@ -44,10 +50,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        Debug.Log("Update running");
-
         fillImage.fillAmount = Mathf.Lerp(fillImage.fillAmount, targetFill, Time.deltaTime * 5f);
-
         UpdateColor();
     }
 
@@ -66,7 +69,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    
     public void HitBomb()
     {
         if (currentConditions > 8)
@@ -82,12 +84,11 @@ public class GameManager : MonoBehaviour
             currentConditions = 0;
         }
 
-        score = 0; 
+        score = 0;
 
         UpdateUI();
-        UpdateColor();        
-        UpdateEnvironment(); 
-        UpdateEnvironment();
+        UpdateColor();
+        UpdateEnvironment(); // ✅ fixed duplicate call removed
     }
 
     void UpdateUI()
@@ -99,33 +100,33 @@ public class GameManager : MonoBehaviour
 
     void UpdateColor()
     {
-
         if (currentConditions <= 4)
         {
             fillImage.color = Color.red;
-            Debug.Log("RED");
         }
         else if (currentConditions <= 8)
         {
             fillImage.color = Color.yellow;
-            Debug.Log("YELLOW");
         }
         else
         {
             fillImage.color = Color.green;
-            Debug.Log("GREEN");
         }
     }
 
     void UpdateEnvironment()
     {
-        
         if (currentConditions <= 4)
         {
             if (currentEnv != betterEnv)
                 ApplyEnvironment(betterEnv, betterSkybox);
+
+            if (envChanged && betterMid != null)
+            {
+                TeleportPlayer(betterMid.position);
+                envChanged = false;
+            }
         }
-      
         else if (currentConditions <= 8)
         {
             if (currentEnv != goodEnv)
@@ -133,14 +134,25 @@ public class GameManager : MonoBehaviour
                 ApplyEnvironment(goodEnv, goodSkybox);
                 StartCoroutine(ShowPerfectPanel());
             }
+
+            if (envChanged && goodMid != null)
+            {
+                TeleportPlayer(goodMid.position);
+                envChanged = false;
+            }
         }
-        
         else
         {
             if (currentEnv != perfectEnv)
             {
                 ApplyEnvironment(perfectEnv, perfectSkybox);
                 StartCoroutine(ShowPerfectPanel());
+            }
+
+            if (envChanged && perfectMid != null)
+            {
+                TeleportPlayer(perfectMid.position);
+                envChanged = false;
             }
         }
     }
@@ -149,24 +161,42 @@ public class GameManager : MonoBehaviour
     {
         if (env == null) return;
 
-        // Disable all
+        // Disable all environments
         betterEnv.SetActive(false);
         goodEnv.SetActive(false);
         perfectEnv.SetActive(false);
 
-       
         Vector3 envPos = env.transform.position;
 
+        // Follow player XZ
         env.transform.position = new Vector3(
-            playerTf.position.x,   
-            envPos.y,              
-            playerTf.position.z    
+            playerTf.position.x,
+            envPos.y,
+            playerTf.position.z
         );
 
         env.SetActive(true);
         RenderSettings.skybox = skybox;
 
         currentEnv = env;
+        envChanged = true; // ✅ important
+    }
+
+    void TeleportPlayer(Vector3 targetPos)
+    {
+        // Safe teleport (prevents physics issues)
+        CharacterController cc = playerTf.GetComponent<CharacterController>();
+
+        if (cc != null)
+        {
+            cc.enabled = false;
+            playerTf.position = targetPos;
+            cc.enabled = true;
+        }
+        else
+        {
+            playerTf.position = targetPos;
+        }
     }
 
     IEnumerator ShowPerfectPanel()
