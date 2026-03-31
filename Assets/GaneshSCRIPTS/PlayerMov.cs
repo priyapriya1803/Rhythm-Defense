@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerMov : MonoBehaviour
 {
     private Animator animator;
-    private AudioSource audioSource;
 
     public float rotationSpeed = 120f;
     public AudioClip moveSound;
@@ -13,10 +12,8 @@ public class PlayerMov : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
 
-        audioSource.clip = moveSound;
-        audioSource.loop = true;
+
     }
 
     void Update()
